@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Number To Word Conversion App</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+
+<div>
+    <br/>
+    Enter Name: <input type="text" id="name"/>
+    <br/><br/>
+    Enter Number: <input type="text" id="number"/>
+    <br/><br/>
+    <input type="button" value="Submit" onclick="convert();"/>    
+    <p id="nameResult"></p>
+    <p id="wordResult"/>
+</div>
+
+<script>
+    var uri = 'api/numbertowords';
+    
+    // AJAX request    
+    function convert() {
+
+        clearFields();
+
+        var number = $('#number').val();
+        var name = $('#name').val();
+
+        var isValid = isValidInput(number, name);
+
+        if (isValid === false)
+            return false;
+        
+        $.getJSON(uri + '/' + number + '/')
+            .done(function(data) {
+                $('#nameResult').text("Entered Name: " + name);
+                $('#wordResult').text("Entered Number in Words: " + data);
+            })
+            .fail(function(jqXHR, textStatus, err) {
+                $('#product').text('Error: ' + err);
+            });
+    }
+
+    function clearFields() {
+        $('#nameResult').text("");
+        $('#nameResult').css("color", "");
+        $('#wordResult').text("");
+    }
+
+    function isValidInput(number,name) {
+        if ($.trim(name).length === 0 || $.trim(number).length === 0) {
+            $('#nameResult').text("Please enter both name and number");
+            $('#nameResult').css("color", "red");
+            return false;
+        }
+        if (!$.isNumeric(number)) {
+            $('#nameResult').text("Please enter valid number");
+            $('#nameResult').css("color", "red");
+            return false;
+        }
+        if (number < 0) {
+            $('#nameResult').text("Please enter valid number! Negative numbers are not allowed.");
+            $('#nameResult').css("color", "red");
+            return false;
+        }
+
+        var splitDecimal = number.split('.');
+        if (splitDecimal.length > 1) {
+            if (splitDecimal[1].length > 2) {
+                $('#nameResult').text("Please enter valid number! Only Two digits are allowed after decimal.");
+                $('#nameResult').css("color", "red");
+                return false;
+            }
+        }
+    }
+
+</script>
+</body>
+</html>
