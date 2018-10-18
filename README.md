@@ -1,4 +1,4 @@
-# AKQATest
+# Cucumber Test
 This project is for Number to Currency Word Conversion. 
 
 This solution contains two projects,
